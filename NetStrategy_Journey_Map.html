@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetStrategy — Lead Nurture Journey Map</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #1B2A4A;
+    --teal:   #006D77;
+    --teal-lt:#E6F3F4;
+    --bg:     #F4F6F9;
+    --white:  #FFFFFF;
+    --rule:   #E2E8F0;
+    --text:   #374151;
+    --muted:  #6B7280;
+
+    /* Audience */
+    --a1: #1D4ED8; --a1-lt: #EFF6FF; --a1-dk: #1e3a8a;
+    --a2: #15803D; --a2-lt: #F0FDF4; --a2-dk: #14532d;
+    --a3: #C2410C; --a3-lt: #FFF7ED; --a3-dk: #7c2d12;
+    --a4: #7E22CE; --a4-lt: #FDF4FF; --a4-dk: #4a044e;
+    --a5: #B91C1C; --a5-lt: #FEF2F2; --a5-dk: #7f1d1d;
+
+    /* Channels */
+    --ch-edm:   #1D4ED8;
+    --ch-li:    #0077B5;
+    --ch-blog:  #15803D;
+    --ch-event: #C2410C;
+    --ch-paid:  #7E22CE;
+    --ch-sales: #B91C1C;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 32px 48px 28px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 24px rgba(27,42,74,0.18);
+  }
+  .header-left h1 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7FA8C9;
+    margin-bottom: 6px;
+  }
+  .header-left h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #B0C8DC;
+    font-weight: 500;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── CHANNEL KEY ── */
+  .channel-key {
+    background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 48px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .ch-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #fff;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    padding: 32px 48px 64px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── AUDIENCE FILTER TABS ── */
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .tab.active, .tab:hover { opacity: 1; transform: translateY(-1px); }
+  .tab.inactive { opacity: 0.45; }
+
+  /* ── JOURNEY SECTION ── */
+  .journey {
+    margin-bottom: 40px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(27,42,74,0.08);
+    transition: all 0.35s ease;
+  }
+  .journey.hidden { display: none; }
+
+  .journey-header {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .journey-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .journey-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+  }
+  .journey-title { font-size: 18px; font-weight: 700; color: #fff; }
+  .journey-subtitle { font-size: 12.5px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .journey-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .meta-pill {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+  .collapse-icon {
+    color: rgba(255,255,255,0.6);
+    font-size: 18px;
+    transition: transform 0.25s;
+    margin-left: 16px;
+  }
+  .journey.collapsed .collapse-icon { transform: rotate(-90deg); }
+
+  .journey-body {
+    background: #fff;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .journey.collapsed .journey-body { max-height: 0; }
+
+  /* ── OBJECTIVE BAR ── */
+  .objective-bar {
+    padding: 14px 28px;
+    background: #FAFBFD;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .obj-item { display: flex; align-items: flex-start; gap: 8px; }
+  .obj-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .obj-value { font-size: 13px; font-weight: 500; color: var(--navy); }
+
+  /* ── SWIMLANE ── */
+  .swimlane {
+    overflow-x: auto;
+    padding: 24px 28px 28px;
+  }
+  .swimlane-inner {
+    display: flex;
+    gap: 0;
+    min-width: max-content;
+    position: relative;
+  }
+
+  /* connector line */
+  .swimlane-inner::before {
+    content: '';
+    position: absolute;
+    top: 44px;
+    left: 60px;
+    right: 60px;
+    height: 2px;
+    background: var(--rule);
+    z-index: 0;
+  }
+
+  /* ── STEP CARD ── */
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .step + .step::before {
+    content: '→';
+    position: absolute;
+    top: 32px;
+    left: -18px;
+    font-size: 18px;
+    color: var(--rule);
+    z-index: 2;
+    font-weight: 300;
+  }
+
+  .step-node {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 14px;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 2px currentColor, 0 4px 12px rgba(0,0,0,0.12);
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  .step-card {
+    background: #FAFBFD;
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 14px 14px 16px;
+    width: 100%;
+    text-align: left;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .step-card:hover {
+    box-shadow: 0 6px 20px rgba(27,42,74,0.12);
+    transform: translateY(-2px);
+  }
+  .step-timing {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+  .step-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .step-content {
+    font-size: 11.5px;
+    color: var(--text);
+    line-height: 1.45;
+    margin-bottom: 10px;
+  }
+  .step-channels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .ch-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .step-goal {
+    margin-top: 8px;
+    padding: 6px 8px;
+    border-radius: 5px;
+    font-size: 10.5px;
+    font-style: italic;
+    color: var(--muted);
+    border-left: 3px solid var(--rule);
+    background: #F8FAFC;
+    line-height: 1.4;
+  }
+
+  /* ── BRANCH INDICATOR ── */
+  .branch-note {
+    margin: 0 28px 20px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1.5px dashed;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .branch-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── EXIT CRITERIA ── */
+  .exit-bar {
+    margin: 0 28px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .exit-card {
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1.5px solid;
+  }
+  .exit-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .exit-text { font-size: 12.5px; line-height: 1.5; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .stat {
+    flex: 1;
+    padding: 14px 20px;
+    border-right: 1px solid var(--rule);
+    text-align: center;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--rule);
+    margin-top: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .header { padding: 20px 20px 16px; flex-direction: column; gap: 16px; align-items: flex-start; }
+    .main { padding: 20px 16px 48px; }
+    .channel-key { padding: 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <h1>NetStrategy // Demand Generation</h1>
+    <h2>Lead Nurture Journey Map</h2>
+  </div>
+  <div class="header-right">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a1)"></div>A1 Strategic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a2)"></div>A2 Project</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a3)"></div>A3 Historic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a4)"></div>A4 MQL</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--a5)"></div>A5 SQL</div>
+  </div>
+</header>
+
+<div class="channel-key">
+  <span class="ch-tag" style="background:var(--ch-edm)">eDM</span>
+  <span class="ch-tag" style="background:var(--ch-li)">LinkedIn</span>
+  <span class="ch-tag" style="background:var(--ch-blog)">Blog / SEO</span>
+  <span class="ch-tag" style="background:var(--ch-event)">Events</span>
+  <span class="ch-tag" style="background:var(--ch-paid)">Paid</span>
+  <span class="ch-tag" style="background:var(--ch-sales)">Sales</span>
+</div>
+
+<div class="main">
+
+  <!-- FILTER TABS -->
+  <div class="filter-tabs" id="filterTabs">
+    <div class="tab active" style="background:var(--navy);color:#fff;border-color:var(--navy)" onclick="filterJourneys('all',this)">All Journeys</div>
+    <div class="tab" style="background:var(--a1-lt);color:var(--a1);border-color:var(--a1)" onclick="filterJourneys('a1',this)">A1 — Strategic Clients</div>
+    <div class="tab" style="background:var(--a2-lt);color:var(--a2);border-color:var(--a2)" onclick="filterJourneys('a2',this)">A2 — Project Clients</div>
+    <div class="tab" style="background:var(--a3-lt);color:var(--a3);border-color:var(--a3)" onclick="filterJourneys('a3',this)">A3 — Historic Clients</div>
+    <div class="tab" style="background:var(--a4-lt);color:var(--a4);border-color:var(--a4)" onclick="filterJourneys('a4',this)">A4 — MQL Leads</div>
+    <div class="tab" style="background:var(--a5-lt);color:var(--a5);border-color:var(--a5)" onclick="filterJourneys('a5',this)">A5 — SQL Pipeline</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- A1 — STRATEGIC CLIENTS                         -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="journey" data-audience="a1" id="journey-a1">
+    <div class="journey-header" style="background:linear-gradient(135deg,var(--a1-dk),var(--a1))" onclick="toggleJourney('a1')">
+      <div class="journey-header-left">
+        <span class="journey-code">A1</span>
+        <div>
+          <div class="journey-title">Strategic Clients — Managed Accounts</div>
+          <div class="journey-subtitle">14 clients · 106 contacts · MSA + Project work</div>
+        </div>
+      </div>
+      <div class="journey-meta">
+        <span class="meta-pill">🎯 Retain + Advocate</span>
+        <span class="meta-pill">Monthly + Quarterly</span>
+        <span class="collapse-icon">▾</span>
+      </div>
+    </div>
+    <div class="journey-body">
+      <div class="objective-bar">
+        <div class="obj-item"><div class="obj-label">Objective</div><div class="obj-value">Deepen partnership. Build advocacy. Secure renewal.</div></div>
+        <div class="obj-item"><div class="obj-label">Trigger</div><div class="obj-value">Contact confirmed as VIP/Strategic in HubSpot</div></div>
+        <div class="obj-item"><div class="obj-label">Cadence</div><div class="obj-value">Monthly eDM + quarterly personal touchpoint</div></div>
+        <div class="obj-item"><div class="obj-label">Target KPI</div><div class="obj-value">NPS ≥70 · Renewal rate 100% · 2 case studies/year</div></div>
+      </div>
+
+      <div class="swimlane">
+        <div class="swimlane-inner">
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a1);box-shadow:0 0 0 2px var(--a1),0 4px 12px rgba(29,78,216,0.2)">1</div>
+            <div class="step-card">
+              <div class="step-timing">TRIGGER — Day 1</div>
+              <div class="step-name">VIP Welcome</div>
+              <div class="step-content">Personal note from Jim. Acknowledges the partnership, shares one insight relevant to their school.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-sales)">Sales</span></div>
+              <div class="step-goal">Set the tone: you are a VIP partner, not a prospect.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a1);box-shadow:0 0 0 2px var(--a1),0 4px 12px rgba(29,78,216,0.2)">2</div>
+            <div class="step-card">
+              <div class="step-timing">MONTHLY — 1st Tuesday</div>
+              <div class="step-name">Insight eDM</div>
+              <div class="step-content">Sector insight, regulatory update, or market forecast. 1 case study. No promotional content.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Build authority. Give them something worth sharing internally.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a1);box-shadow:0 0 0 2px var(--a1),0 4px 12px rgba(29,78,216,0.2)">3</div>
+            <div class="step-card">
+              <div class="step-timing">QUARTERLY</div>
+              <div class="step-name">Thought Leadership</div>
+              <div class="step-content">Jim or senior leader perspective on a sector challenge. Optional PDF download. LinkedIn tag.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-li)">LinkedIn</span></div>
+              <div class="step-goal">Reinforce expertise. Encourage sharing with their board.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a1);box-shadow:0 0 0 2px var(--a1),0 4px 12px rgba(29,78,216,0.2)">4</div>
+            <div class="step-card">
+              <div class="step-timing">PER EVENT CYCLE (~5/yr)</div>
+              <div class="step-name">VIP Event Invite</div>
+              <div class="step-content">Early access or reserved seat. Acknowledge the relationship. Personalised from their account manager.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-event)">Events</span></div>
+              <div class="step-goal">Deepen relationship. Face-to-face contact.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a1);box-shadow:0 0 0 2px var(--a1),0 4px 12px rgba(29,78,216,0.2)">5</div>
+            <div class="step-card">
+              <div class="step-timing">ANNUALLY — Pre-renewal</div>
+              <div class="step-name">Strategic Review</div>
+              <div class="step-content">Personalised note from account manager. Invite to strategic review. NPS survey follows.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Renew. Expand scope. Unlock referral or case study.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="exit-bar">
+        <div class="exit-card" style="border-color:#BBF7D0;background:#F0FDF4">
+          <div class="exit-label" style="color:var(--a2)">✓ Success Exit</div>
+          <div class="exit-text">Contract renewed. NPS ≥70. Client provides case study or referral → flag for advocacy program.</div>
+        </div>
+        <div class="exit-card" style="border-color:#FED7AA;background:#FFF7ED">
+          <div class="exit-label" style="color:var(--a3)">⚠ Risk Flag</div>
+          <div class="exit-text">eDM open rate drops below 20% for 3 consecutive months → alert account manager for personal outreach.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-value">14</div><div class="stat-label">Active clients</div></div>
+        <div class="stat"><div class="stat-value">106</div><div class="stat-label">Contacts</div></div>
+        <div class="stat"><div class="stat-value">Monthly</div><div class="stat-label">eDM cadence</div></div>
+        <div class="stat"><div class="stat-value">NPS 70</div><div class="stat-label">Target score</div></div>
+        <div class="stat"><div class="stat-value">100%</div><div class="stat-label">Renewal target</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- A2 — PROJECT CLIENTS                           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="journey" data-audience="a2" id="journey-a2">
+    <div class="journey-header" style="background:linear-gradient(135deg,var(--a2-dk),var(--a2))" onclick="toggleJourney('a2')">
+      <div class="journey-header-left">
+        <span class="journey-code">A2</span>
+        <div>
+          <div class="journey-title">Active Project Clients — Convert to MSA</div>
+          <div class="journey-subtitle">25 clients · 130 contacts · Project work only</div>
+        </div>
+      </div>
+      <div class="journey-meta">
+        <span class="meta-pill">🎯 Convert to MSA</span>
+        <span class="meta-pill">Monthly + Quarterly Campaign</span>
+        <span class="collapse-icon">▾</span>
+      </div>
+    </div>
+    <div class="journey-body">
+      <div class="objective-bar">
+        <div class="obj-item"><div class="obj-label">Objective</div><div class="obj-value">Convert project-only clients to Managed Services Agreement.</div></div>
+        <div class="obj-item"><div class="obj-label">Trigger</div><div class="obj-value">Classified as Project Client in HubSpot OR project delivery complete</div></div>
+        <div class="obj-item"><div class="obj-label">Cadence</div><div class="obj-value">Monthly eDM (MSA version) + quarterly 3-email conversion sequence</div></div>
+        <div class="obj-item"><div class="obj-label">Target KPI</div><div class="obj-value">15% project → MSA conversion per quarter</div></div>
+      </div>
+
+      <div class="swimlane">
+        <div class="swimlane-inner">
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a2);box-shadow:0 0 0 2px var(--a2),0 4px 12px rgba(21,128,61,0.2)">1</div>
+            <div class="step-card">
+              <div class="step-timing">MONTHLY — 1st Tuesday</div>
+              <div class="step-name">MSA Insight eDM</div>
+              <div class="step-content">One MSA case study per send. "What managed services looks like for a school like yours." One ROI proof point.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Shift perception: MSA is risk reduction, not a cost.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a2);box-shadow:0 0 0 2px var(--a2),0 4px 12px rgba(21,128,61,0.2)">2</div>
+            <div class="step-card">
+              <div class="step-timing">POST-PROJECT — Within 7 days</div>
+              <div class="step-name">Project Close Follow-up</div>
+              <div class="step-content">Personal note from account manager. What we noticed about your environment. What we'd recommend next.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Strike while confidence is highest. Warm handoff to MSA conversation.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a2);box-shadow:0 0 0 2px var(--a2),0 4px 12px rgba(21,128,61,0.2)">3</div>
+            <div class="step-card">
+              <div class="step-timing">QUARTERLY — Email 1 of 3</div>
+              <div class="step-name">MSA Campaign: The Risk</div>
+              <div class="step-content">"The risk of project-only IT in schools." Data-led. Sector-specific. Calm, not alarming.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Create awareness of the problem MSA solves.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a2);box-shadow:0 0 0 2px var(--a2),0 4px 12px rgba(21,128,61,0.2)">4</div>
+            <div class="step-card">
+              <div class="step-timing">QUARTERLY — Email 2 of 3 (Week 2)</div>
+              <div class="step-name">MSA Campaign: The Proof</div>
+              <div class="step-content">"What a school like yours gets from MSA." Specific inclusions, outcomes, and one client story.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Move from awareness to active consideration.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a2);box-shadow:0 0 0 2px var(--a2),0 4px 12px rgba(21,128,61,0.2)">5</div>
+            <div class="step-card">
+              <div class="step-timing">QUARTERLY — Email 3 of 3 (Week 4)</div>
+              <div class="step-name">MSA Campaign: The Moment</div>
+              <div class="step-content">"The moment they wished they had an MSA." A client story told from the school's perspective. CTA: Book a conversation.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-sales)">Sales</span></div>
+              <div class="step-goal">Trigger a sales conversation. Hand off to A5 pipeline.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="branch-note" style="border-color:var(--a2);color:var(--a2-dk);background:var(--a2-lt)">
+        <span class="branch-icon">⑂</span>
+        <span><strong>Branch logic:</strong> If contact clicks CTA in Email 3 → trigger immediate sales alert in HubSpot + move to A5 SQL journey. If no engagement after full sequence → return to monthly eDM cadence and repeat quarterly campaign next quarter.</span>
+      </div>
+
+      <div class="exit-bar">
+        <div class="exit-card" style="border-color:#BBF7D0;background:#F0FDF4">
+          <div class="exit-label" style="color:var(--a2)">✓ Success Exit</div>
+          <div class="exit-text">MSA signed → migrate contact to A1 Strategic Clients segment. Flag for onboarding sequence.</div>
+        </div>
+        <div class="exit-card" style="border-color:#FECACA;background:#FEF2F2">
+          <div class="exit-label" style="color:var(--a5)">↩ Recycle</div>
+          <div class="exit-text">No conversion after 3 quarterly campaigns → sales review required. Remain in monthly eDM cadence.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-value">25</div><div class="stat-label">Active clients</div></div>
+        <div class="stat"><div class="stat-value">130</div><div class="stat-label">Contacts</div></div>
+        <div class="stat"><div class="stat-value">3 emails</div><div class="stat-label">Per quarterly campaign</div></div>
+        <div class="stat"><div class="stat-value">15%</div><div class="stat-label">Conversion target</div></div>
+        <div class="stat"><div class="stat-value">Highest</div><div class="stat-label">Commercial priority</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- A3 — HISTORIC CLIENTS                          -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="journey" data-audience="a3" id="journey-a3">
+    <div class="journey-header" style="background:linear-gradient(135deg,var(--a3-dk),var(--a3))" onclick="toggleJourney('a3')">
+      <div class="journey-header-left">
+        <span class="journey-code">A3</span>
+        <div>
+          <div class="journey-title">Historic Clients — Re-engagement</div>
+          <div class="journey-subtitle">Data TBC — Positive former clients only · July 2023 to present</div>
+        </div>
+      </div>
+      <div class="journey-meta">
+        <span class="meta-pill">🎯 Re-engage</span>
+        <span class="meta-pill">Quarterly only</span>
+        <span class="meta-pill">⚠ Data cleanse first</span>
+        <span class="collapse-icon">▾</span>
+      </div>
+    </div>
+    <div class="journey-body">
+      <div class="objective-bar">
+        <div class="obj-item"><div class="obj-label">Objective</div><div class="obj-value">Reconnect with former clients. Soft re-entry. Move re-engaged contacts to A4 MQL.</div></div>
+        <div class="obj-item"><div class="obj-label">Trigger</div><div class="obj-value">Contact confirmed as Historic/Positive in HubSpot after data cleanse</div></div>
+        <div class="obj-item"><div class="obj-label">Cadence</div><div class="obj-value">Quarterly only — respectful, not persistent</div></div>
+        <div class="obj-item"><div class="obj-label">Pre-condition</div><div class="obj-value" style="color:#C2410C;font-weight:600">⚠ Data cleanse MUST complete before activation</div></div>
+      </div>
+
+      <div class="swimlane">
+        <div class="swimlane-inner">
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a3);box-shadow:0 0 0 2px var(--a3),0 4px 12px rgba(194,65,12,0.2)">1</div>
+            <div class="step-card">
+              <div class="step-timing">QUARTERLY — Q1</div>
+              <div class="step-name">Re-introduction eDM</div>
+              <div class="step-content">From Jim. "We've been thinking about challenges heading into 2026." Insight-led. Soft tone. No hard CTA.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Plant a seed. Remind them of the relationship.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a3);box-shadow:0 0 0 2px var(--a3),0 4px 12px rgba(194,65,12,0.2)">2</div>
+            <div class="step-card">
+              <div class="step-timing">QUARTERLY — Q2</div>
+              <div class="step-name">Case Study Share</div>
+              <div class="step-content">One case study matched to their school profile. "This is what we did for a school like yours."</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Show current capability. Demonstrate what they're missing.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a3);box-shadow:0 0 0 2px var(--a3),0 4px 12px rgba(194,65,12,0.2)">3</div>
+            <div class="step-card">
+              <div class="step-timing">PER EVENT — As relevant</div>
+              <div class="step-name">Event Invitation</div>
+              <div class="step-content">Invite to a relevant event. Easy to say yes, no commitment required. Lowest friction re-entry point.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-event)">Events</span></div>
+              <div class="step-goal">Face-to-face re-engagement.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a3);box-shadow:0 0 0 2px var(--a3),0 4px 12px rgba(194,65,12,0.2)">4</div>
+            <div class="step-card">
+              <div class="step-timing">TRIGGERED — On engagement</div>
+              <div class="step-name">Re-engagement Trigger</div>
+              <div class="step-content">2+ email opens in 60 days OR event attendance → auto-promote to A4 MQL. Sales receives HubSpot alert.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span></div>
+              <div class="step-goal">Convert warm historic contact to active MQL pipeline.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="branch-note" style="border-color:#FED7AA;color:var(--a3-dk);background:#FFF7ED">
+        <span class="branch-icon">⚠</span>
+        <span><strong>Data cleanse gate:</strong> This journey must not activate until Peter confirms the historic client list is clean. Only contacts categorised as positive former clients from July 2023 onwards should be included. Unhappy or churned clients must be archived, not included in any re-engagement sequence.</span>
+      </div>
+
+      <div class="exit-bar">
+        <div class="exit-card" style="border-color:#BBF7D0;background:#F0FDF4">
+          <div class="exit-label" style="color:var(--a2)">✓ Success Exit</div>
+          <div class="exit-text">Contact re-engages (2+ opens or event attendance) → promote to A4 MQL journey. Sales alert triggered.</div>
+        </div>
+        <div class="exit-card" style="border-color:var(--rule);background:#F8FAFC">
+          <div class="exit-label" style="color:var(--muted)">→ No Response</div>
+          <div class="exit-text">No engagement after 4 quarterly sends (12 months) → archive contact. Do not continue sending.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-value">TBC</div><div class="stat-label">Historic contacts</div></div>
+        <div class="stat"><div class="stat-value">Quarterly</div><div class="stat-label">Send cadence</div></div>
+        <div class="stat"><div class="stat-value">2 opens</div><div class="stat-label">Re-engagement trigger</div></div>
+        <div class="stat"><div class="stat-value">12 months</div><div class="stat-label">Archive threshold</div></div>
+        <div class="stat"><div class="stat-value">⚠ Gated</div><div class="stat-label">Awaiting data cleanse</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- A4 — MQL NEW LEADS                             -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="journey" data-audience="a4" id="journey-a4">
+    <div class="journey-header" style="background:linear-gradient(135deg,var(--a4-dk),var(--a4))" onclick="toggleJourney('a4')">
+      <div class="journey-header-left">
+        <span class="journey-code">A4</span>
+        <div>
+          <div class="journey-title">New Leads — MQL Nurture</div>
+          <div class="journey-subtitle">1,348 current MQLs · Day 1 to SQL qualification or 90-day archive</div>
+        </div>
+      </div>
+      <div class="journey-meta">
+        <span class="meta-pill">🎯 MQL → SQL</span>
+        <span class="meta-pill">2x Week 1–2, then Fortnightly</span>
+        <span class="meta-pill">Highest Volume</span>
+        <span class="collapse-icon">▾</span>
+      </div>
+    </div>
+    <div class="journey-body">
+      <div class="objective-bar">
+        <div class="obj-item"><div class="obj-label">Objective</div><div class="obj-value">Educate, build trust, and qualify leads into SQL for sales engagement.</div></div>
+        <div class="obj-item"><div class="obj-label">Trigger</div><div class="obj-value">Form fill / event QR scan / content download / manual sales input</div></div>
+        <div class="obj-item"><div class="obj-label">Cadence</div><div class="obj-value">Days 1–14: high frequency. Day 14+: fortnightly. Day 90: review gate.</div></div>
+        <div class="obj-item"><div class="obj-label">Target KPI</div><div class="obj-value">MQL → SQL conversion ≥15% · First 14 days critical</div></div>
+      </div>
+
+      <div class="swimlane">
+        <div class="swimlane-inner">
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a4);box-shadow:0 0 0 2px var(--a4),0 4px 12px rgba(126,34,206,0.2)">1</div>
+            <div class="step-card">
+              <div class="step-timing">DAY 1 — Immediate</div>
+              <div class="step-name">Welcome + Deliver</div>
+              <div class="step-content">Acknowledge the interaction. Deliver what they asked for + one related insight. Clear next step: book a call or explore a resource.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Capture the moment of intent.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a4);box-shadow:0 0 0 2px var(--a4),0 4px 12px rgba(126,34,206,0.2)">2</div>
+            <div class="step-card">
+              <div class="step-timing">DAY 3</div>
+              <div class="step-name">Education Email 1</div>
+              <div class="step-content">"Most schools we speak to face this challenge..." Thought leadership relevant to their interaction. No product pitch.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-paid)">Paid</span></div>
+              <div class="step-goal">Build credibility. Encourage a second interaction.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a4);box-shadow:0 0 0 2px var(--a4),0 4px 12px rgba(126,34,206,0.2)">3</div>
+            <div class="step-card">
+              <div class="step-timing">DAY 7</div>
+              <div class="step-name">Social Proof</div>
+              <div class="step-content">Short case study or video testimonial from a similar school. LinkedIn retargeting mirrors this content.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-li)">LinkedIn</span></div>
+              <div class="step-goal">Transfer trust from a peer school.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a4);box-shadow:0 0 0 2px var(--a4),0 4px 12px rgba(126,34,206,0.2)">4</div>
+            <div class="step-card">
+              <div class="step-timing">DAY 14</div>
+              <div class="step-name">Education Email 2</div>
+              <div class="step-content">Deeper content: self-assessment tool, guide, or webinar invite matched to their school profile.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-paid)">Paid</span></div>
+              <div class="step-goal">Deepen engagement. Move to active research.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a4);box-shadow:0 0 0 2px var(--a4),0 4px 12px rgba(126,34,206,0.2)">5</div>
+            <div class="step-card">
+              <div class="step-timing">FORTNIGHTLY — Day 14 to 90</div>
+              <div class="step-name">Nurture Rotation</div>
+              <div class="step-content">Rotate: (1) Insight eDM → (2) Case study → (3) Event invite → (4) Soft CTA "Ready to talk? Book a 30-min review."</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span><span class="ch-badge" style="background:var(--ch-li)">LinkedIn</span><span class="ch-badge" style="background:var(--ch-paid)">Paid</span></div>
+              <div class="step-goal">Maintain presence. Create low-friction entry points to sales.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a4);box-shadow:0 0 0 2px var(--a4),0 4px 12px rgba(126,34,206,0.2)">6</div>
+            <div class="step-card">
+              <div class="step-timing">DAY 90 — Review Gate</div>
+              <div class="step-name">Re-qualification</div>
+              <div class="step-content">"Has anything changed in your environment?" If no response: move to light quarterly nurture or archive and clean.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Prevent list decay. Keep data accurate.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="branch-note" style="border-color:var(--a4);color:var(--a4-dk);background:var(--a4-lt)">
+        <span class="branch-icon">⑂</span>
+        <span><strong>HubSpot scoring branch:</strong> Score reaches 51+ at any point → auto-promote to A5 SQL + immediate sales alert. Score 21–50 = remain in MQL fortnightly. Score 0–20 after Day 14 = move to quarterly light nurture. Scoring: email open +2, link click +5, page visit +3, case study download +8, webinar attendance +10, "Contact Us" page visit +15.</span>
+      </div>
+
+      <div class="exit-bar">
+        <div class="exit-card" style="border-color:#BBF7D0;background:#F0FDF4">
+          <div class="exit-label" style="color:var(--a2)">✓ Success Exit</div>
+          <div class="exit-text">Score ≥51 → promote to A5 SQL. Sales alert triggered. Pause all automated nurture eDMs immediately.</div>
+        </div>
+        <div class="exit-card" style="border-color:var(--rule);background:#F8FAFC">
+          <div class="exit-label" style="color:var(--muted)">→ Low Engagement Exit</div>
+          <div class="exit-text">Score &lt;21 at Day 90 → move to quarterly re-engagement cadence. No response at 6 months → archive.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-value">1,348</div><div class="stat-label">Current MQLs</div></div>
+        <div class="stat"><div class="stat-value">6 emails</div><div class="stat-label">Core sequence</div></div>
+        <div class="stat"><div class="stat-value">90 days</div><div class="stat-label">Review gate</div></div>
+        <div class="stat"><div class="stat-value">≥15%</div><div class="stat-label">MQL→SQL target</div></div>
+        <div class="stat"><div class="stat-value">51+</div><div class="stat-label">SQL score threshold</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- A5 — SQL / PIPELINE                            -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="journey" data-audience="a5" id="journey-a5">
+    <div class="journey-header" style="background:linear-gradient(135deg,var(--a5-dk),var(--a5))" onclick="toggleJourney('a5')">
+      <div class="journey-header-left">
+        <span class="journey-code">A5</span>
+        <div>
+          <div class="journey-title">SQL & Active Pipeline — Sales-Led</div>
+          <div class="journey-subtitle">Marketing-supported · Sales owns the relationship</div>
+        </div>
+      </div>
+      <div class="journey-meta">
+        <span class="meta-pill">🎯 SQL → Client</span>
+        <span class="meta-pill">Sales-owned, weekly</span>
+        <span class="collapse-icon">▾</span>
+      </div>
+    </div>
+    <div class="journey-body">
+      <div class="objective-bar">
+        <div class="obj-item"><div class="obj-label">Objective</div><div class="obj-value">Convert qualified leads to signed clients. Sales owns this journey.</div></div>
+        <div class="obj-item"><div class="obj-label">Trigger</div><div class="obj-value">Lead score ≥51 OR sales manually qualifies as SQL</div></div>
+        <div class="obj-item"><div class="obj-label">Cadence</div><div class="obj-value">Sales-led, weekly or as-needed. Automated eDMs paused.</div></div>
+        <div class="obj-item"><div class="obj-label">Marketing role</div><div class="obj-value">Enablement only — supply the right asset at the right moment on request</div></div>
+      </div>
+
+      <div class="swimlane">
+        <div class="swimlane-inner">
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a5);box-shadow:0 0 0 2px var(--a5),0 4px 12px rgba(185,28,28,0.2)">1</div>
+            <div class="step-card">
+              <div class="step-timing">IMMEDIATE — On SQL promotion</div>
+              <div class="step-name">Sales Handover</div>
+              <div class="step-content">Warm personal outreach. Reference the specific interaction. No corporate eDM — this is a person, not a sequence.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span></div>
+              <div class="step-goal">Start the relationship on the right terms.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a5);box-shadow:0 0 0 2px var(--a5),0 4px 12px rgba(185,28,28,0.2)">2</div>
+            <div class="step-card">
+              <div class="step-timing">WITHIN 24HRS of first call</div>
+              <div class="step-name">Discovery Follow-up</div>
+              <div class="step-content">Summary of what was discussed. A case study tailored to their specific situation. Shows we listened.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Reinforce credibility. Demonstrate understanding.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a5);box-shadow:0 0 0 2px var(--a5),0 4px 12px rgba(185,28,28,0.2)">3</div>
+            <div class="step-card">
+              <div class="step-timing">PROPOSAL STAGE</div>
+              <div class="step-name">Proposal + Reassurance</div>
+              <div class="step-content">Clear, short, recommendation-led proposal. Supporting: one relevant testimonial. Remove all unnecessary complexity.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span></div>
+              <div class="step-goal">Make the decision easy. Remove doubt.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a5);box-shadow:0 0 0 2px var(--a5),0 4px 12px rgba(185,28,28,0.2)">4</div>
+            <div class="step-card">
+              <div class="step-timing">IF SILENT — 5 business days</div>
+              <div class="step-name">Momentum Touch</div>
+              <div class="step-content">A new relevant insight. Not a follow-up chase. "Thought you'd find this useful given what you shared..." Creates re-entry without pressure.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span><span class="ch-badge" style="background:var(--ch-li)">LinkedIn</span></div>
+              <div class="step-goal">Remove friction. Keep the conversation alive.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a5);box-shadow:0 0 0 2px var(--a5),0 4px 12px rgba(185,28,28,0.2)">5</div>
+            <div class="step-card">
+              <div class="step-timing">ON WIN</div>
+              <div class="step-name">Onboarding Handoff</div>
+              <div class="step-content">Welcome communication. Introduce the team. Outline first 30 days. Set clear expectations. Migrate to A1 journey.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span><span class="ch-badge" style="background:var(--ch-edm)">eDM</span></div>
+              <div class="step-goal">Start the client relationship on the right terms.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-node" style="color:var(--a5);box-shadow:0 0 0 2px var(--a5),0 4px 12px rgba(185,28,28,0.2)">6</div>
+            <div class="step-card">
+              <div class="step-timing">ON LOSS</div>
+              <div class="step-name">Graceful Exit</div>
+              <div class="step-content">No immediate re-approach. Tag as lost in HubSpot. Return to A4 MQL fortnightly nurture after 90-day cooling period.</div>
+              <div class="step-channels"><span class="ch-badge" style="background:var(--ch-sales)">Sales</span></div>
+              <div class="step-goal">Preserve the relationship for a future opportunity.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="exit-bar">
+        <div class="exit-card" style="border-color:#BBF7D0;background:#F0FDF4">
+          <div class="exit-label" style="color:var(--a2)">✓ Win → A1 or A2</div>
+          <div class="exit-text">Contract signed → migrate to A1 (if MSA) or A2 (if project-only). Begin onboarding sequence immediately.</div>
+        </div>
+        <div class="exit-card" style="border-color:var(--rule);background:#F8FAFC">
+          <div class="exit-label" style="color:var(--muted)">→ Loss → A4 (90-day delay)</div>
+          <div class="exit-text">Deal lost → 90-day cooling period → re-enter A4 MQL fortnightly nurture. Sales adds a note on reason for loss.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-value">Sales</div><div class="stat-label">Journey owner</div></div>
+        <div class="stat"><div class="stat-value">Paused</div><div class="stat-label">Automated eDMs</div></div>
+        <div class="stat"><div class="stat-value">24hrs</div><div class="stat-label">Follow-up SLA</div></div>
+        <div class="stat"><div class="stat-value">5 days</div><div class="stat-label">Silence threshold</div></div>
+        <div class="stat"><div class="stat-value">90 days</div><div class="stat-label">Loss cooling period</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  NetStrategy // Lead Nurture Journey Map &nbsp;·&nbsp; Internal Reference &nbsp;·&nbsp; February 2026
+  &nbsp;·&nbsp; All journeys subject to HubSpot data cleanse completion
+</footer>
+
+<script>
+  function toggleJourney(id) {
+    const j = document.getElementById('journey-' + id);
+    j.classList.toggle('collapsed');
+  }
+
+  function filterJourneys(audience, clickedTab) {
+    // Update tabs
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active','inactive'));
+    clickedTab.classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => {
+      if (t !== clickedTab) t.classList.add('inactive');
+    });
+
+    // Filter journeys
+    document.querySelectorAll('.journey').forEach(j => {
+      if (audience === 'all') {
+        j.classList.remove('hidden');
+      } else {
+        j.dataset.audience === audience
+          ? j.classList.remove('hidden')
+          : j.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
+</html>
